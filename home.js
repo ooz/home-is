@@ -10,8 +10,6 @@ window.onload = function() {
         render: render
     });
 
-    var controls = {}
-
     var colliding = {
         a: [],
         b: []
@@ -23,13 +21,30 @@ window.onload = function() {
 
         game.load.image('standing-on-the-ground', 'assets/standing-on-the-ground.png');
         game.load.image('ground', 'assets/ground.png');
-        game.load.image('astronaut', 'assets/astronaut.png');
+        game.load.image('astronaut', 'assets/astronaut-cropped.png');
+        game.load.image('spaceship', 'assets/spaceship.png');
+        game.load.image('house', 'assets/house.png');
+        game.load.image('flowers', 'assets/flowers.png');
 
         game.load.image('breath-of-the-elements', 'assets/the-breath-of-the-elements.png');
 
         game.load.image('spending-time-together', 'assets/spending-time-together.png');
 
         game.load.image('the-noise-outside', 'assets/the-noise-outside.png');
+
+        game.load.image('a-bath', 'assets/a-bath.png');
+
+        game.load.image('a-bed', 'assets/a-bed.png');
+
+        game.load.image('and-well-fed', 'assets/and-well-fed.png');
+
+        game.load.image('leaving-home', 'assets/leaving-home.png');
+
+        game.load.image('to-return-home', 'assets/to-return-home.png');
+
+        game.load.image('not-a-game', 'assets/not-a-game.png');
+
+        game.load.image('when-someone-is-waiting', 'assets/when-someone-is-waiting.png');
     }
 
     function create() {
@@ -48,14 +63,14 @@ window.onload = function() {
         game.input.onDown.add(onDown, this);
 
         // Pause
-        controls.logo = game.add.image(game.world.centerX, game.world.centerY, 'play');
-        controls.logo.anchor.setTo(0.5, 0.5);
+        let play = game.add.image(game.world.centerX, game.world.centerY, 'play');
+        play.anchor.setTo(0.5, 0.5);
         game.onResume.add(function() {
-            controls.logo.kill()
+            play.kill()
         });
         game.onPause.add(function() {
-            controls.logo.revive()
-            controls.logo.bringToTop()
+            play.revive()
+            play.bringToTop()
         });
         game.paused = true
     }
@@ -83,6 +98,7 @@ window.onload = function() {
         game.world.add(stage)
     }
 
+    const TRASH = ['spaceship', 'house', 'flowers']
     function newStandingOnTheGroundStage() {
         let stage = new Phaser.Stage(game)
 
@@ -94,35 +110,41 @@ window.onload = function() {
         ground.body.immovable = true
         stage.add(ground)
 
-        var astronaut = game.add.sprite(140, 482, 'astronaut')
+        var astronaut = game.add.sprite(100, 360, 'astronaut')
         stage.add(astronaut)
 
         var trash = game.add.group();
         for (var i = 0; i < 5; ++i) {
-            let trashItem = game.add.sprite(20 + 40 * i, 25.0, 'astronaut')
+            let trashItem = game.add.sprite(40 + 55 * i, 25.0, randomItem(TRASH))
             trashItem.angle = random(0, 359)
             trashItem.anchor.setTo(0.5, 0.5);
             game.physics.enable(trashItem, Phaser.Physics.ARCADE);
-            trashItem.body.gravity.y = random(150, 200);
+            trashItem.body.gravity.y = random(200, 300);
             game.physics.arcade.collide(trashItem, ground);
-            trashItem.body.bounce.set(0.8)
+            trashItem.body.bounce.set(0.5)
             trash.add(trashItem)
         }
 
         colliding.a = trash.children
         colliding.b = [ ground ]
 
-        sprite.inputEnabled = true;
-        sprite.events.onInputDown.add(function() {
-            if (game.paused) { return; }
+        var next = function(nextStage) {
+            return function() {
+                if (game.paused) { return; }
+                resetColliding()
+                nextStage.apply()
+                ground.destroy()
+                astronaut.destroy()
+                trash.destroy()
+                sprite.destroy()
+                stage.destroy()
+            }
+        }
 
-            newBreathOfTheElementsStage()
-            ground.destroy()
-            astronaut.destroy()
-            trash.destroy()
-            sprite.destroy()
-            stage.destroy()
-        }, this);
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(next(newBreathOfTheElementsStage), this);
+        astronaut.inputEnabled = true;
+        astronaut.events.onInputDown.add(next(newStandingOnTheGroundStage), this);
 
         game.world.add(stage)
     }
@@ -170,6 +192,125 @@ window.onload = function() {
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
+            newBathStage()
+            sprite.destroy();
+            stage.destroy()
+        }, this);
+
+        game.world.add(stage)
+    }
+
+    function newBathStage() {
+        let stage = new Phaser.Stage(game)
+
+        var sprite = game.add.sprite(0, 540.0, 'a-bath')
+        stage.add(sprite)
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            newBedStage()
+            sprite.destroy();
+            stage.destroy()
+        }, this);
+
+        game.world.add(stage)
+    }
+
+    function newBedStage() {
+        let stage = new Phaser.Stage(game)
+
+        var sprite = game.add.sprite(0, 540.0, 'a-bed')
+        stage.add(sprite)
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            newWellFedStage()
+            sprite.destroy();
+            stage.destroy()
+        }, this);
+
+        game.world.add(stage)
+    }
+
+    function newWellFedStage() {
+        let stage = new Phaser.Stage(game)
+
+        var sprite = game.add.sprite(0, 540.0, 'and-well-fed')
+        stage.add(sprite)
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            newLeavingHomeStage()
+            sprite.destroy();
+            stage.destroy()
+        }, this);
+
+        game.world.add(stage)
+    }
+
+    function newLeavingHomeStage() {
+        let stage = new Phaser.Stage(game)
+
+        var sprite = game.add.sprite(0, 540.0, 'leaving-home')
+        stage.add(sprite)
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            newReturnHomeStage()
+            sprite.destroy();
+            stage.destroy()
+        }, this);
+
+        game.world.add(stage)
+    }
+
+    function newReturnHomeStage() {
+        let stage = new Phaser.Stage(game)
+
+        var sprite = game.add.sprite(0, 540.0, 'to-return-home')
+        stage.add(sprite)
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            newNoGameStage()
+            sprite.destroy();
+            stage.destroy()
+        }, this);
+
+        game.world.add(stage)
+    }
+
+    function newNoGameStage() {
+        let stage = new Phaser.Stage(game)
+
+        var sprite = game.add.sprite(0, 540.0, 'not-a-game')
+        stage.add(sprite)
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            newSomeoneIsWaitingStage()
+            sprite.destroy();
+            stage.destroy()
+        }, this);
+
+        game.world.add(stage)
+    }
+
+    function newSomeoneIsWaitingStage() {
+        let stage = new Phaser.Stage(game)
+
+        var sprite = game.add.sprite(0, 540.0, 'when-someone-is-waiting')
+        stage.add(sprite)
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
             newTitleStage()
             sprite.destroy();
             stage.destroy()
@@ -184,8 +325,8 @@ window.onload = function() {
     function update() {
         if (!game.scale.isFullScreen) {
             game.paused = true;
-            return;
         }
+        if (game.paused) { return; }
 
         game.physics.arcade.collide(colliding.a, colliding.b);
     }
