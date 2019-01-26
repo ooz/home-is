@@ -8,6 +8,7 @@ Theme: "what home means to you"
 
 * Bootstrap v4.0.0-alpha.6
 * phaser v2.11.1
+* https://www.favicon-generator.org/ for the favicon
 
 ## Credits
 
