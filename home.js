@@ -12,14 +12,18 @@ window.onload = function() {
 
     var controls = {}
 
-    var currentStage = null
-
     function preload() {
         game.load.image('logo', 'assets/home-is-logo.png');
         game.load.image('play', 'assets/play.png');
 
         game.load.image('standing-on-the-ground', 'assets/standing-on-the-ground.png');
         game.load.image('ground', 'assets/ground.png');
+
+        game.load.image('breath-of-the-elements', 'assets/the-breath-of-the-elements.png');
+
+        game.load.image('spending-time-together', 'assets/spending-time-together.png');
+
+        game.load.image('the-noise-outside', 'assets/the-noise-outside.png');
     }
 
     function create() {
@@ -30,9 +34,8 @@ window.onload = function() {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        // Sprites
-        currentStage = newTitleStage()
-        game.world.add(currentStage)
+        // Stages
+        newTitleStage()
 
         // Input
         game.input.onDown.add(onDown, this);
@@ -41,53 +44,105 @@ window.onload = function() {
         controls.logo = game.add.image(game.world.centerX, game.world.centerY, 'play');
         controls.logo.anchor.setTo(0.5, 0.5);
         game.onResume.add(function() {
-            controls.logo.kill();
+            controls.logo.kill()
         });
         game.onPause.add(function() {
-            controls.logo.revive();
-            controls.logo.bringToTop();
+            controls.logo.revive()
+            controls.logo.bringToTop()
         });
-        game.paused = true;
+        game.paused = true
     }
 
     function newTitleStage() {
-        var stage = new Phaser.Stage(game)
+        let stage = new Phaser.Stage(game)
 
         var sprite = game.add.sprite(0, 0, 'logo')
+        stage.add(sprite)
         game.physics.enable(sprite, Phaser.Physics.ARCADE);
         sprite.body.collideWorldBounds = true;
         sprite.body.gravity.y = 200;
 
         sprite.body.onWorldBounds = new Phaser.Signal();
         sprite.body.onWorldBounds.add(function(sprite) {
-            game.world.remove(currentStage, true);
-            currentStage = newStandingOnTheGroundStage()
-            game.world.add(currentStage)
-        }, this);
+            newStandingOnTheGroundStage()
+            sprite.destroy()
+            stage.destroy()
+        }, this)
 
-        stage.add(sprite)
-
-        return stage
+        game.world.add(stage)
     }
 
     function newStandingOnTheGroundStage() {
-        var stage = new Phaser.Stage(game)
+        let stage = new Phaser.Stage(game)
 
         var sprite = game.add.sprite(0, 540.0, 'standing-on-the-ground')
+        stage.add(sprite)
+
+        var ground = game.add.sprite(0, 510, 'ground')
+        stage.add(ground)
+
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            newBreathOfTheElementsStage()
+            ground.destroy()
+            sprite.destroy()
+            stage.destroy()
+        }, this);
+
+        game.world.add(stage)
+    }
+
+    function newBreathOfTheElementsStage() {
+        let stage = new Phaser.Stage(game)
+
+        var sprite = game.add.sprite(0, 540.0, 'breath-of-the-elements')
         stage.add(sprite)
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
-            game.world.remove(currentStage, true);
-            currentStage = newTitleStage()
-            game.world.add(currentStage)
+            newSpendingTimeTogetherStage()
+            sprite.destroy();
+            stage.destroy()
         }, this);
 
-        sprite = game.add.sprite(0, 510, 'ground')
-        stage.add(sprite)
+        game.world.add(stage)
+    }
 
-        return stage
+    function newSpendingTimeTogetherStage() {
+        let stage = new Phaser.Stage(game)
+
+        var sprite = game.add.sprite(0, 540.0, 'spending-time-together')
+        stage.add(sprite)
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            newNoiseOutsideStage()
+            sprite.destroy();
+            stage.destroy()
+        }, this);
+
+        game.world.add(stage)
+    }
+
+    function newNoiseOutsideStage() {
+        let stage = new Phaser.Stage(game)
+
+        var sprite = game.add.sprite(0, 540.0, 'the-noise-outside')
+        stage.add(sprite)
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            newTitleStage()
+            sprite.destroy();
+            stage.destroy()
+        }, this);
+
+        game.world.add(stage)
     }
 
     function render() {
