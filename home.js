@@ -44,6 +44,7 @@ window.onload = function() {
         game.load.image('and-well-fed', 'assets/and-well-fed.png')
 
         game.load.image('leaving-home', 'assets/leaving-home.png')
+        game.load.image('ramp', 'assets/ramp.png')
 
         game.load.image('to-return-home', 'assets/to-return-home.png')
 
@@ -268,20 +269,51 @@ window.onload = function() {
 
         var sprite = game.add.sprite(0, 540.0, 'leaving-home')
         stage.add(sprite)
-        sprite.inputEnabled = true;
-        sprite.events.onInputDown.add(function() {
+
+        var ground = game.add.sprite(0, 510, 'ground')
+        stage.add(ground)
+
+        var ramp = game.add.sprite(100, 430, 'ramp')
+        stage.add(ramp)
+
+        var spaceship = game.add.sprite(150, 430, 'spaceship')
+        stage.add(spaceship)
+
+        spaceship.inputEnabled = true;
+        game.physics.enable(spaceship, Phaser.Physics.ARCADE);
+        spaceship.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
-            newReturnHomeStage()
-            sprite.destroy()
-            stage.destroy()
+            spaceship.body.acceleration.set(0, -200)
+            spaceship.body.gravity.set(0, 100)
         }, this);
+
+        var next = function(nextStage) {
+            return function() {
+                if (game.paused) { return; }
+
+                nextStage.apply()
+                ground.destroy()
+                ramp.destroy()
+                spaceship.destroy()
+                sprite.destroy()
+                stage.destroy()
+            }
+        }
+
+        ramp.inputEnabled = true;
+        ramp.events.onInputDown.add(next(newLeavingHomeStage), this);
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(next(newReturnHomeStage), this);
 
         game.world.add(stage)
     }
 
     function newReturnHomeStage() {
         let stage = new Phaser.Stage(game)
+
+        var ground = game.add.sprite(0, 510, 'ground')
+        stage.add(ground)
 
         var sprite = game.add.sprite(0, 540.0, 'to-return-home')
         stage.add(sprite)
@@ -290,6 +322,7 @@ window.onload = function() {
             if (game.paused) { return; }
 
             newNoGameStage()
+            ground.destroy()
             sprite.destroy()
             stage.destroy()
         }, this);
@@ -377,9 +410,6 @@ window.onload = function() {
             controls.emitter.x = pointer.x;
             controls.emitter.y = pointer.y;
 
-            //  The first parameter sets the effect to "explode" which means all particles are emitted at once
-            //  The third is ignored when using burst/explode mode
-            //  The final parameter (10) is how many particles will be emitted in this single burst
             controls.emitter.start(true, 3000, null, 2);
         }
 
