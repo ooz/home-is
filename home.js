@@ -16,45 +16,46 @@ window.onload = function() {
     }
 
     function preload() {
-        game.load.image('logo', 'assets/home-is-large.png');
-        game.load.image('play', 'assets/play.png');
+        game.load.image('logo', 'assets/home-is-large.png')
+        game.load.image('play', 'assets/play.png')
 
-        game.load.image('standing-on-the-ground', 'assets/standing-on-the-ground.png');
-        game.load.image('ground', 'assets/ground.png');
-        game.load.image('astronaut', 'assets/astronaut-cropped.png');
-        game.load.image('spaceship', 'assets/spaceship.png');
-        game.load.image('house', 'assets/house.png');
-        game.load.image('flowers', 'assets/flowers.png');
+        game.load.image('standing-on-the-ground', 'assets/standing-on-the-ground.png')
+        game.load.image('ground', 'assets/ground.png')
+        game.load.image('astronaut', 'assets/astronaut-cropped.png')
+        game.load.image('spaceship', 'assets/spaceship.png')
+        game.load.image('house', 'assets/house.png')
+        game.load.image('flowers', 'assets/flowers.png')
 
-        game.load.image('breath-of-the-elements', 'assets/the-breath-of-the-elements.png');
+        game.load.image('breath-of-the-elements', 'assets/the-breath-of-the-elements.png')
 
-        game.load.image('spending-time-together', 'assets/spending-time-together.png');
+        game.load.image('spending-time-together', 'assets/spending-time-together.png')
 
-        game.load.image('the-noise-outside', 'assets/the-noise-outside.png');
+        game.load.image('the-noise-outside', 'assets/the-noise-outside.png')
 
-        game.load.image('a-bath', 'assets/a-bath.png');
+        game.load.image('a-bath', 'assets/a-bath.png')
 
-        game.load.image('a-bed', 'assets/a-bed.png');
+        game.load.image('a-bed', 'assets/a-bed.png')
 
-        game.load.image('and-well-fed', 'assets/and-well-fed.png');
+        game.load.image('and-well-fed', 'assets/and-well-fed.png')
 
-        game.load.image('leaving-home', 'assets/leaving-home.png');
+        game.load.image('leaving-home', 'assets/leaving-home.png')
 
-        game.load.image('to-return-home', 'assets/to-return-home.png');
+        game.load.image('to-return-home', 'assets/to-return-home.png')
 
-        game.load.image('not-a-game', 'assets/not-a-game.png');
+        game.load.image('not-a-game', 'assets/not-a-game.png')
 
-        game.load.image('when-someone-is-waiting', 'assets/when-someone-is-waiting.png');
+        game.load.image('when-someone-is-waiting', 'assets/when-someone-is-waiting.png')
+        game.load.image('fin', 'assets/fin.png')
     }
 
     function create() {
         // Maintain aspect ratio
-        game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL
 
         // Init
-        game.stage.backgroundColor = "#FFFFFF";
-        game.physics.startSystem(Phaser.Physics.ARCADE);
-        resetColliding();
+        game.stage.backgroundColor = "#FFFFFF"
+        game.physics.startSystem(Phaser.Physics.ARCADE)
+        resetColliding()
 
         // Stages
         newTitleStage()
@@ -159,7 +160,7 @@ window.onload = function() {
             if (game.paused) { return; }
 
             newSpendingTimeTogetherStage()
-            sprite.destroy();
+            sprite.destroy()
             stage.destroy()
         }, this);
 
@@ -176,7 +177,7 @@ window.onload = function() {
             if (game.paused) { return; }
 
             newNoiseOutsideStage()
-            sprite.destroy();
+            sprite.destroy()
             stage.destroy()
         }, this);
 
@@ -193,7 +194,7 @@ window.onload = function() {
             if (game.paused) { return; }
 
             newBathStage()
-            sprite.destroy();
+            sprite.destroy()
             stage.destroy()
         }, this);
 
@@ -210,7 +211,7 @@ window.onload = function() {
             if (game.paused) { return; }
 
             newBedStage()
-            sprite.destroy();
+            sprite.destroy()
             stage.destroy()
         }, this);
 
@@ -227,7 +228,7 @@ window.onload = function() {
             if (game.paused) { return; }
 
             newWellFedStage()
-            sprite.destroy();
+            sprite.destroy()
             stage.destroy()
         }, this);
 
@@ -244,7 +245,7 @@ window.onload = function() {
             if (game.paused) { return; }
 
             newLeavingHomeStage()
-            sprite.destroy();
+            sprite.destroy()
             stage.destroy()
         }, this);
 
@@ -261,7 +262,7 @@ window.onload = function() {
             if (game.paused) { return; }
 
             newReturnHomeStage()
-            sprite.destroy();
+            sprite.destroy()
             stage.destroy()
         }, this);
 
@@ -278,7 +279,7 @@ window.onload = function() {
             if (game.paused) { return; }
 
             newNoGameStage()
-            sprite.destroy();
+            sprite.destroy()
             stage.destroy()
         }, this);
 
@@ -295,7 +296,7 @@ window.onload = function() {
             if (game.paused) { return; }
 
             newSomeoneIsWaitingStage()
-            sprite.destroy();
+            sprite.destroy()
             stage.destroy()
         }, this);
 
@@ -307,14 +308,21 @@ window.onload = function() {
 
         var sprite = game.add.sprite(0, 540.0, 'when-someone-is-waiting')
         stage.add(sprite)
+
+        var banner = game.add.sprite(0, 0, 'fin')
+        stage.add(banner)
+
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
             newTitleStage()
-            sprite.destroy();
+            sprite.destroy()
+            banner.destroy()
             stage.destroy()
         }, this);
+
+
 
         game.world.add(stage)
     }
