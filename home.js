@@ -17,6 +17,9 @@ window.onload = function() {
     function preload() {
         game.load.image('logo', 'assets/home-is-logo.png');
         game.load.image('play', 'assets/play.png');
+
+        game.load.image('standing-on-the-ground', 'assets/standing-on-the-ground.png');
+        game.load.image('ground', 'assets/ground.png');
     }
 
     function create() {
@@ -28,7 +31,7 @@ window.onload = function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         // Sprites
-        currentStage = newTitleScreen()
+        currentStage = newTitleStage()
         game.world.add(currentStage)
 
         // Input
@@ -47,7 +50,7 @@ window.onload = function() {
         game.paused = true;
     }
 
-    function newTitleScreen() {
+    function newTitleStage() {
         var stage = new Phaser.Stage(game)
 
         var sprite = game.add.sprite(0, 0, 'logo')
@@ -58,10 +61,30 @@ window.onload = function() {
         sprite.body.onWorldBounds = new Phaser.Signal();
         sprite.body.onWorldBounds.add(function(sprite) {
             game.world.remove(currentStage, true);
-            currentStage = newTitleScreen()
+            currentStage = newStandingOnTheGroundStage()
             game.world.add(currentStage)
         }, this);
 
+        stage.add(sprite)
+
+        return stage
+    }
+
+    function newStandingOnTheGroundStage() {
+        var stage = new Phaser.Stage(game)
+
+        var sprite = game.add.sprite(0, 540.0, 'standing-on-the-ground')
+        stage.add(sprite)
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            game.world.remove(currentStage, true);
+            currentStage = newTitleStage()
+            game.world.add(currentStage)
+        }, this);
+
+        sprite = game.add.sprite(0, 510, 'ground')
         stage.add(sprite)
 
         return stage
