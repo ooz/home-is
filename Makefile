@@ -1,3 +1,5 @@
+all: test
+
 # Cleanup
 clean_vscode:
 	rm -rf .vscode

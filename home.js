@@ -12,12 +12,18 @@ window.onload = function() {
 
     var controls = {}
 
+    var colliding = {
+        a: [],
+        b: []
+    }
+
     function preload() {
-        game.load.image('logo', 'assets/home-is-logo.png');
+        game.load.image('logo', 'assets/home-is-large.png');
         game.load.image('play', 'assets/play.png');
 
         game.load.image('standing-on-the-ground', 'assets/standing-on-the-ground.png');
         game.load.image('ground', 'assets/ground.png');
+        game.load.image('astronaut', 'assets/astronaut.png');
 
         game.load.image('breath-of-the-elements', 'assets/the-breath-of-the-elements.png');
 
@@ -30,9 +36,10 @@ window.onload = function() {
         // Maintain aspect ratio
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 
+        // Init
         game.stage.backgroundColor = "#FFFFFF";
-
         game.physics.startSystem(Phaser.Physics.ARCADE);
+        resetColliding();
 
         // Stages
         newTitleStage()
@@ -53,21 +60,25 @@ window.onload = function() {
         game.paused = true
     }
 
+    function resetColliding() {
+        colliding.a = []
+        colliding.b = []
+    }
+
     function newTitleStage() {
         let stage = new Phaser.Stage(game)
 
         var sprite = game.add.sprite(0, 0, 'logo')
         stage.add(sprite)
-        game.physics.enable(sprite, Phaser.Physics.ARCADE);
-        sprite.body.collideWorldBounds = true;
-        sprite.body.gravity.y = 200;
 
-        sprite.body.onWorldBounds = new Phaser.Signal();
-        sprite.body.onWorldBounds.add(function(sprite) {
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
             newStandingOnTheGroundStage()
             sprite.destroy()
             stage.destroy()
-        }, this)
+        }, this);
 
         game.world.add(stage)
     }
@@ -79,7 +90,27 @@ window.onload = function() {
         stage.add(sprite)
 
         var ground = game.add.sprite(0, 510, 'ground')
+        game.physics.enable(ground, Phaser.Physics.ARCADE);
+        ground.body.immovable = true
         stage.add(ground)
+
+        var astronaut = game.add.sprite(140, 482, 'astronaut')
+        stage.add(astronaut)
+
+        var trash = game.add.group();
+        for (var i = 0; i < 5; ++i) {
+            let trashItem = game.add.sprite(20 + 40 * i, 25.0, 'astronaut')
+            trashItem.angle = random(0, 359)
+            trashItem.anchor.setTo(0.5, 0.5);
+            game.physics.enable(trashItem, Phaser.Physics.ARCADE);
+            trashItem.body.gravity.y = random(150, 200);
+            game.physics.arcade.collide(trashItem, ground);
+            trashItem.body.bounce.set(0.8)
+            trash.add(trashItem)
+        }
+
+        colliding.a = trash.children
+        colliding.b = [ ground ]
 
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
@@ -87,6 +118,8 @@ window.onload = function() {
 
             newBreathOfTheElementsStage()
             ground.destroy()
+            astronaut.destroy()
+            trash.destroy()
             sprite.destroy()
             stage.destroy()
         }, this);
@@ -153,6 +186,8 @@ window.onload = function() {
             game.paused = true;
             return;
         }
+
+        game.physics.arcade.collide(colliding.a, colliding.b);
     }
 
     function onDown() {
