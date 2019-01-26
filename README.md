@@ -6,6 +6,7 @@ Theme: "what home means to you"
 
 ## Dependencies
 
+* Bootstrap v4.0.0-alpha.6
 * phaser v2.11.1
 
 ## Credits
