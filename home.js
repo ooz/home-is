@@ -12,6 +12,8 @@ window.onload = function() {
 
     var controls = {}
 
+    var currentStage = null
+
     function preload() {
         game.load.image('logo', 'assets/home-is-logo.png');
         game.load.image('play', 'assets/play.png');
@@ -26,7 +28,8 @@ window.onload = function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         // Sprites
-        game.world.add(newTitleScreen())
+        currentStage = newTitleScreen()
+        game.world.add(currentStage)
 
         // Input
         game.input.onDown.add(onDown, this);
@@ -51,6 +54,14 @@ window.onload = function() {
         game.physics.enable(sprite, Phaser.Physics.ARCADE);
         sprite.body.collideWorldBounds = true;
         sprite.body.gravity.y = 200;
+
+        sprite.body.onWorldBounds = new Phaser.Signal();
+        sprite.body.onWorldBounds.add(function(sprite) {
+            game.world.remove(currentStage, true);
+            currentStage = newTitleScreen()
+            game.world.add(currentStage)
+        }, this);
+
         stage.add(sprite)
 
         return stage
