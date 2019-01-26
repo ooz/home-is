@@ -15,6 +15,11 @@ window.onload = function() {
         b: []
     }
 
+    var controls = {
+        emitter: null,
+        emit: false
+    }
+
     function preload() {
         game.load.image('logo', 'assets/home-is-large.png')
         game.load.image('play', 'assets/play.png')
@@ -46,6 +51,8 @@ window.onload = function() {
 
         game.load.image('when-someone-is-waiting', 'assets/when-someone-is-waiting.png')
         game.load.image('fin', 'assets/fin.png')
+        game.load.spritesheet('astronaut-partner', 'assets/astronaut-partner-cropped.png', 100, 152, 4)
+        game.load.image('heart', 'assets/heart.png');
     }
 
     function create() {
@@ -57,7 +64,11 @@ window.onload = function() {
         game.physics.startSystem(Phaser.Physics.ARCADE)
         resetColliding()
 
-        // Stages
+        // Sprites and stages
+        controls.emitter = game.add.emitter(0, 0, 100);
+        controls.emitter.makeParticles('heart');
+        controls.emitter.gravity = -250;
+
         newTitleStage()
 
         // Input
@@ -312,17 +323,32 @@ window.onload = function() {
         var banner = game.add.sprite(0, 0, 'fin')
         stage.add(banner)
 
+        var partner = game.add.sprite(45, 250, 'astronaut-partner')
+        var blink = partner.animations.add('blink')
+        partner.animations.play('blink', 8, true)
+        stage.add(partner)
+
+        var astronaut = game.add.sprite(155, 250, 'astronaut')
+        stage.add(astronaut)
+
+        stage.add(controls.emitter)
+        controls.emit = true
+
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
+            controls.emitter.resetAll(-1000, -1000)
+            controls.emit = false
+
             newTitleStage()
             sprite.destroy()
+            blink.destroy()
+            partner.destroy()
+            astronaut.destroy()
             banner.destroy()
             stage.destroy()
         }, this);
-
-
 
         game.world.add(stage)
     }
@@ -339,13 +365,24 @@ window.onload = function() {
         game.physics.arcade.collide(colliding.a, colliding.b);
     }
 
-    function onDown() {
+    function onDown(pointer) {
         // Fullscreen
         game.paused = false;
         if (!game.scale.isFullScreen) {
             game.scale.startFullScreen(false);
             return;
         }
+
+        if (controls.emitter && controls.emit) {
+            controls.emitter.x = pointer.x;
+            controls.emitter.y = pointer.y;
+
+            //  The first parameter sets the effect to "explode" which means all particles are emitted at once
+            //  The third is ignored when using burst/explode mode
+            //  The final parameter (10) is how many particles will be emitted in this single burst
+            controls.emitter.start(true, 3000, null, 2);
+        }
+
     }
 
     function debug(text, line=1.0) {
