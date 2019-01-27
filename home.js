@@ -49,6 +49,7 @@ window.onload = function() {
         game.load.image('bed', 'assets/bed.png')
 
         game.load.image('and-well-fed', 'assets/and-well-fed.png')
+        game.load.image('fed', 'assets/fed.png')
 
         game.load.image('leaving-home', 'assets/leaving-home.png')
         game.load.image('ramp', 'assets/ramp.png')
@@ -329,11 +330,20 @@ window.onload = function() {
 
         var sprite = game.add.sprite(0, 540.0, 'and-well-fed')
         stage.add(sprite)
+
+        var flower = game.add.sprite(40, 140, 'flowers')
+        stage.add(flower)
+
+        var fed = game.add.sprite(0, 100, 'fed')
+        stage.add(fed)
+
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
             newLeavingHomeStage()
+            flower.destroy()
+            fed.destroy()
             sprite.destroy()
             stage.destroy()
         }, this);
