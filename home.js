@@ -37,6 +37,7 @@ window.onload = function() {
         game.load.spritesheet('rain', 'assets/rain.png', 150, 200, 4)
 
         game.load.image('spending-time-together', 'assets/spending-time-together.png')
+        game.load.image('astronaut-sitting', 'assets/astronaut-sitting.png')
 
         game.load.image('the-noise-outside', 'assets/the-noise-outside.png')
         game.load.image('astronaut-right', 'assets/astronaut-cropped-right.png')
@@ -232,11 +233,26 @@ window.onload = function() {
 
         var sprite = game.add.sprite(0, 540.0, 'spending-time-together')
         stage.add(sprite)
+
+        var sittingAstroAlice = game.add.sprite(100, 150, 'astronaut-sitting')
+        stage.add(sittingAstroAlice)
+        var sittingAstroBob = game.add.sprite(20, 190, 'astronaut-sitting')
+        stage.add(sittingAstroBob)
+        var sittingAstroClaire = game.add.sprite(10, 280, 'astronaut-sitting')
+        stage.add(sittingAstroClaire)
+
+        var astronaut = game.add.sprite(198, 220, 'astronaut')
+        stage.add(astronaut)
+
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
             newNoiseOutsideStage()
+            sittingAstroAlice.destroy()
+            sittingAstroBob.destroy()
+            sittingAstroClaire.destroy()
+            astronaut.destroy()
             sprite.destroy()
             stage.destroy()
         }, this);
