@@ -32,6 +32,8 @@ window.onload = function() {
         game.load.image('flowers', 'assets/flowers.png')
 
         game.load.image('breath-of-the-elements', 'assets/the-breath-of-the-elements.png')
+        game.load.image('wind', 'assets/wind.png')
+        game.load.spritesheet('rain', 'assets/rain.png', 150, 200, 4)
 
         game.load.image('spending-time-together', 'assets/spending-time-together.png')
 
@@ -167,11 +169,47 @@ window.onload = function() {
 
         var sprite = game.add.sprite(0, 540.0, 'breath-of-the-elements')
         stage.add(sprite)
+
+        var astronaut = game.add.sprite(100, 225, 'astronaut')
+        stage.add(astronaut)
+
+        var wind = game.add.sprite(-300, 150, 'wind')
+        game.physics.enable(wind, Phaser.Physics.ARCADE);
+        stage.add(wind)
+
+        var rain = game.add.sprite(90, 55, 'rain')
+        rain.alpha = 0
+        var raining = rain.animations.add('raining')
+        rain.animations.play('raining', 12, true)
+        stage.add(rain)
+
+        var elementToggle = 0
+
+        astronaut.inputEnabled = true;
+        astronaut.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            if (elementToggle === 0) {
+                rain.alpha = 0
+                wind.x = -300
+                wind.body.velocity.set(400, 0)
+                wind.body.acceleration.set(400, 0)
+                elementToggle = 1
+            } else if (elementToggle === 1) {
+                rain.alpha = 1
+                elementToggle = 0
+            }
+        }, this);
+
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
             newSpendingTimeTogetherStage()
+            raining.destroy()
+            rain.destroy()
+            wind.destroy()
+            astronaut.destroy()
             sprite.destroy()
             stage.destroy()
         }, this);
