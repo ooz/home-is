@@ -43,8 +43,10 @@ window.onload = function() {
         game.load.image('window', 'assets/window.png')
 
         game.load.image('a-bath', 'assets/a-bath.png')
+        game.load.image('bath', 'assets/bath.png')
 
         game.load.image('a-bed', 'assets/a-bed.png')
+        game.load.image('bed', 'assets/bed.png')
 
         game.load.image('and-well-fed', 'assets/and-well-fed.png')
 
@@ -283,11 +285,16 @@ window.onload = function() {
 
         var sprite = game.add.sprite(0, 540.0, 'a-bath')
         stage.add(sprite)
+
+        var bath = game.add.sprite(0, 100, 'bath')
+        stage.add(bath)
+
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
             newBedStage()
+            bath.destroy()
             sprite.destroy()
             stage.destroy()
         }, this);
@@ -300,11 +307,16 @@ window.onload = function() {
 
         var sprite = game.add.sprite(0, 540.0, 'a-bed')
         stage.add(sprite)
+
+        var bed = game.add.sprite(0, 100, 'bed')
+        stage.add(bed)
+
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
             newWellFedStage()
+            bed.destroy()
             sprite.destroy()
             stage.destroy()
         }, this);
