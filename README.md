@@ -4,16 +4,22 @@
 
 Theme: "what home means to you"
 
-Healthiest game jam ever!
+![title screen](screenshot00.png)
+![face the elements](screenshot01.png)
+![leave home](screenshot02.png)
 
 ## Dependencies
 
-* Bootstrap v4.0.0-alpha.6
 * phaser v2.11.1
+* Bootstrap v4.0.0-alpha.6
 * https://www.favicon-generator.org/ for the favicon
 * Font: Purisa Bold
+* Served by GitHub Pages
+
+Thank you! :)
 
 ## Credits
 
-* Oliver "oz" Zeit (Pitch, Programming, Sound effects)
+* Oliver "oz" Zeit (Pitch, Programming, Art)
 
+Healthiest game jam ever!
