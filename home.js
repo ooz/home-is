@@ -38,6 +38,7 @@ window.onload = function() {
 
         game.load.image('spending-time-together', 'assets/spending-time-together.png')
         game.load.image('astronaut-sitting', 'assets/astronaut-sitting.png')
+        game.load.spritesheet('fire', 'assets/fire.png', 100, 150, 3)
 
         game.load.image('the-noise-outside', 'assets/the-noise-outside.png')
         game.load.image('astronaut-right', 'assets/astronaut-cropped-right.png')
@@ -244,6 +245,11 @@ window.onload = function() {
         var astronaut = game.add.sprite(198, 220, 'astronaut')
         stage.add(astronaut)
 
+        var fire = game.add.sprite(105, 240, 'fire')
+        var burning = fire.animations.add('burning')
+        fire.animations.play('burning', 9, true)
+        stage.add(fire)
+
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
@@ -252,6 +258,8 @@ window.onload = function() {
             sittingAstroAlice.destroy()
             sittingAstroBob.destroy()
             sittingAstroClaire.destroy()
+            burning.destroy()
+            fire.destroy()
             astronaut.destroy()
             sprite.destroy()
             stage.destroy()
