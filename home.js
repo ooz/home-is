@@ -77,11 +77,7 @@ window.onload = function() {
         game.physics.startSystem(Phaser.Physics.ARCADE)
         resetColliding()
 
-        // Sprites and stages
-        controls.emitter = game.add.emitter(0, 0, 100);
-        controls.emitter.makeParticles('heart');
-        controls.emitter.gravity = -250;
-
+        // Stages
         newTitleStage()
 
         // Input
@@ -510,6 +506,9 @@ window.onload = function() {
         var astronaut = game.add.sprite(155, 250, 'astronaut')
         stage.add(astronaut)
 
+        controls.emitter = game.add.emitter(0, 0, 100);
+        controls.emitter.makeParticles('heart');
+        controls.emitter.gravity = -250;
         stage.add(controls.emitter)
         controls.emit = true
 
@@ -518,7 +517,10 @@ window.onload = function() {
             if (game.paused) { return; }
 
             controls.emitter.resetAll(-1000, -1000)
+            controls.emitter.removeAll();
             controls.emit = false
+            controls.emitter.destroy()
+            controls.emitter = null
 
             newTitleStage()
             sprite.destroy()
