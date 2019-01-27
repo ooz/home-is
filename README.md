@@ -4,6 +4,8 @@
 
 Theme: "what home means to you"
 
+Healthiest game jam ever!
+
 ## Dependencies
 
 * Bootstrap v4.0.0-alpha.6
