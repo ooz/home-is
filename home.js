@@ -49,6 +49,7 @@ window.onload = function() {
         game.load.image('ramp', 'assets/ramp.png')
 
         game.load.image('to-return-home', 'assets/to-return-home.png')
+        game.load.image('capsule', 'assets/capsule.png')
 
         game.load.image('not-a-game', 'assets/not-a-game.png')
 
@@ -135,7 +136,6 @@ window.onload = function() {
             trashItem.anchor.setTo(0.5, 0.5);
             game.physics.enable(trashItem, Phaser.Physics.ARCADE);
             trashItem.body.gravity.y = random(200, 300);
-            game.physics.arcade.collide(trashItem, ground);
             trashItem.body.bounce.set(0.5)
             trash.add(trashItem)
         }
@@ -351,15 +351,44 @@ window.onload = function() {
         let stage = new Phaser.Stage(game)
 
         var ground = game.add.sprite(0, 510, 'ground')
+        game.physics.enable(ground, Phaser.Physics.ARCADE)
+        ground.body.immovable = true
         stage.add(ground)
+
+        var capsule = game.add.sprite(150, 20, 'capsule')
+        game.physics.enable(capsule, Phaser.Physics.ARCADE)
+        capsule.anchor.setTo(0.5, 0.5)
+        capsule.angle = random(84, 96)
+        capsule.body.collideWorldBounds = true
+        capsule.body.gravity.set(0, 100)
+        game.physics.arcade.velocityFromAngle(capsule.angle, 300, capsule.body.velocity);
+        capsule.body.bounce.set(0.05)
+        stage.add(capsule)
+        colliding.a = [ capsule ]
+        colliding.b = [ ground ]
+
+        capsule.inputEnabled = true
+        capsule.events.onInputDown.add(function() {
+            if (game.paused) { return; }
+
+            capsule.position.set(150, 20)
+            capsule.body.reset(150, 20)
+            capsule.angle = random(84, 96)
+            capsule.body.gravity.set(0, 100)
+            game.physics.arcade.velocityFromAngle(capsule.angle, 300, capsule.body.velocity);
+            colliding.a = [ capsule ]
+            colliding.b = [ ground ]
+        }, this)
 
         var sprite = game.add.sprite(0, 540.0, 'to-return-home')
         stage.add(sprite)
-        sprite.inputEnabled = true;
+        sprite.inputEnabled = true
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
+            resetColliding()
             newNoGameStage()
+            capsule.destroy()
             ground.destroy()
             sprite.destroy()
             stage.destroy()
