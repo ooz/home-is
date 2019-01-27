@@ -60,6 +60,7 @@ window.onload = function() {
         game.load.image('capsule', 'assets/capsule.png')
 
         game.load.image('not-a-game', 'assets/not-a-game.png')
+        game.load.image('no-game', 'assets/no-game.png')
 
         game.load.image('when-someone-is-waiting', 'assets/when-someone-is-waiting.png')
         game.load.image('fin', 'assets/fin.png')
@@ -475,11 +476,16 @@ window.onload = function() {
 
         var sprite = game.add.sprite(0, 540.0, 'not-a-game')
         stage.add(sprite)
+
+        var noGame = game.add.sprite(0, 150, 'no-game')
+        stage.add(noGame)
+
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
             newSomeoneIsWaitingStage()
+            noGame.destroy()
             sprite.destroy()
             stage.destroy()
         }, this);
