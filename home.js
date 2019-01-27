@@ -21,7 +21,8 @@ window.onload = function() {
     }
 
     function preload() {
-        game.load.image('logo', 'assets/home-is-large.png')
+        game.load.image('title', 'assets/home-is-large.png')
+        game.load.image('logo', 'assets/home-is-logo-150px.png')
         game.load.image('play', 'assets/play.png')
 
         game.load.image('standing-on-the-ground', 'assets/standing-on-the-ground.png')
@@ -99,7 +100,10 @@ window.onload = function() {
     function newTitleStage() {
         let stage = new Phaser.Stage(game)
 
-        var sprite = game.add.sprite(0, 0, 'logo')
+        var logo = game.add.sprite(75, 50, 'logo')
+        stage.add(logo)
+
+        var sprite = game.add.sprite(0, 0, 'title')
         stage.add(sprite)
 
         sprite.inputEnabled = true;
@@ -107,6 +111,7 @@ window.onload = function() {
             if (game.paused) { return; }
 
             newStandingOnTheGroundStage()
+            logo.destroy()
             sprite.destroy()
             stage.destroy()
         }, this);
