@@ -39,6 +39,8 @@ window.onload = function() {
         game.load.image('spending-time-together', 'assets/spending-time-together.png')
 
         game.load.image('the-noise-outside', 'assets/the-noise-outside.png')
+        game.load.image('astronaut-right', 'assets/astronaut-cropped-right.png')
+        game.load.image('window', 'assets/window.png')
 
         game.load.image('a-bath', 'assets/a-bath.png')
 
@@ -244,11 +246,31 @@ window.onload = function() {
 
         var sprite = game.add.sprite(0, 540.0, 'the-noise-outside')
         stage.add(sprite)
+
+        var rain = game.add.sprite(150, 100, 'rain')
+        var raining = rain.animations.add('raining')
+        rain.animations.play('raining', 12, true)
+        stage.add(rain)
+
+        var window = game.add.sprite(0, 100, 'window')
+        stage.add(window)
+
+        var astronaut = game.add.sprite(70, 225, 'astronaut-right')
+        stage.add(astronaut)
+
+        var flower = game.add.sprite(30, 300, 'flowers')
+        stage.add(flower)
+
         sprite.inputEnabled = true;
         sprite.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
             newBathStage()
+            raining.destroy()
+            rain.destroy()
+            flower.destroy()
+            window.destroy()
+            astronaut.destroy()
             sprite.destroy()
             stage.destroy()
         }, this);
