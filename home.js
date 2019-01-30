@@ -187,26 +187,33 @@ window.onload = function() {
         stage.add(wind)
 
         var rain = game.add.sprite(90, 55, 'rain')
-        rain.alpha = 0
         var raining = rain.animations.add('raining')
         rain.animations.play('raining', 12, true)
         stage.add(rain)
 
         var elementToggle = 0
+        var letTheWindBlow = function() {
+            rain.alpha = 0
+            wind.x = -300
+            wind.body.velocity.set(400, 0)
+            wind.body.acceleration.set(400, 0)
+            elementToggle = 1
+        }
+        var letTheRainShower = function() {
+            rain.alpha = 1
+            elementToggle = 0
+        }
+
+        letTheWindBlow()
 
         astronaut.inputEnabled = true;
         astronaut.events.onInputDown.add(function() {
             if (game.paused) { return; }
 
             if (elementToggle === 0) {
-                rain.alpha = 0
-                wind.x = -300
-                wind.body.velocity.set(400, 0)
-                wind.body.acceleration.set(400, 0)
-                elementToggle = 1
+                letTheWindBlow()
             } else if (elementToggle === 1) {
-                rain.alpha = 1
-                elementToggle = 0
+                letTheRainShower()
             }
         }, this);
 
@@ -387,6 +394,8 @@ window.onload = function() {
         var spaceship = game.add.sprite(150, 430, 'spaceship')
         stage.add(spaceship)
 
+        var stillHome = true
+
         spaceship.inputEnabled = true;
         game.physics.enable(spaceship, Phaser.Physics.ARCADE);
         spaceship.events.onInputDown.add(function() {
@@ -394,11 +403,12 @@ window.onload = function() {
 
             spaceship.body.acceleration.set(0, -200)
             spaceship.body.gravity.set(0, 100)
+            stillHome = false
         }, this);
 
         var next = function(nextStage) {
             return function() {
-                if (game.paused) { return; }
+                if (game.paused || stillHome) { return; }
 
                 nextStage.apply()
                 ground.destroy()
